@@ -22,3 +22,6 @@ erl_crash.dump
 # Ignore package tarball (built via "mix hex.build").
 Tabletop-*.tar
 
+# Ignore IntelliJ IDEA Files
+.idea
+*.iml
