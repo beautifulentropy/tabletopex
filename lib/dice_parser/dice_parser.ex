@@ -62,11 +62,14 @@ defmodule DiceParse do
   defp resolve_group_sums([chunk | remaining]), do: [chunk | resolve_group_sums(remaining)]
 
   defp resolve_group_operations(chunks) do
+    counts = chunks
+    |> List.flatten()
+    |> Enum.frequencies()
     sum = chunks
     |> resolve_group_sums()
     |> resolve_operator()
     |> Enum.sum()
-    %{sum: sum, chunks: chunks}
+    %{sum: sum, chunks: chunks, counts: counts}
   end
 
   defp resolve_operator([left_side, "+", right_side | remaining]), do: resolve_operator([left_side + right_side | remaining])
@@ -77,12 +80,14 @@ defmodule DiceParse do
 
   defp create_result_map(result) do
     case is_integer(result.sum) do
-      :true  -> %{result: result.sum, breakdown: result.chunks}
+      :true  -> %{
+        sum: result.sum, breakdown: result.chunks, counts: result.counts}
       :false -> %{
-        result: round(result.sum),
-        result_ceil: ceil(result.sum),
-        result_floor: floor(result.sum),
-        breakdown: result.chunks
+        sum: result.sum,
+        sum_ceil: ceil(result.sum),
+        sum_floor: floor(result.sum),
+        breakdown: result.chunks,
+        counts: result.counts
       }
     end
   end
